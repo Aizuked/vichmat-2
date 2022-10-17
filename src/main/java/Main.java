@@ -7,6 +7,13 @@ import java.util.LinkedList;
 
 public class Main {
 
+    static final double[][] a = {
+            {4.003, 0.207, 0.519, 0.281},
+            {0.416, 3.273, 0.326, 0.375},
+            {0.297, 0.351, 2.997, 0.429},
+            {0.412, 0.194, 0.215, 3.628}
+    };
+
     static final double[][] d = {
             {4.003, 0, 0, 0},
             {0, 3.273, 0, 0},
@@ -59,5 +66,20 @@ public class Main {
         cache.stream().forEachOrdered(i -> {
             System.out.println(Arrays.deepToString(i.getArray()) + " " + deltaX.get(cache.indexOf(i)));
         });
+
+        int checkCtr = 0;
+        for (int i = 0; i < 4; i++) {
+            double diag = d[i][i];
+            double temp = 0;
+            for (int j = 0; j < 4; j++) {
+                if (a[i][j] != diag) {
+                    temp += a[i][j];
+                }
+            }
+            if (diag > temp) checkCtr++;
+            temp = 0;
+        }
+
+        System.out.println(checkCtr == 4 ? "Сходится" : "Не сходится");
     }
 }
