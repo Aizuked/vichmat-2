@@ -55,12 +55,12 @@ public class Main {
 
         cache.addFirst(new Matrix(new double[]{0, 0, 0, 0}, 1));
         deltaX.addFirst(0d);
-        cache.add(c);
+        cache.add(Sa.matrixRoundUp(c));
         deltaX.add(cache.getLast().minus(cache.get(cache.indexOf(cache.getLast()) - 1)).norm1());
 
         while (cache.getLast().minus(cache.get(cache.indexOf(cache.getLast()) - 1)).norm1() >= (1 - B.norm1()) / B.norm1() * accuracy) {
-            cache.addLast(cache.getLast().times(B).plus(c));
-            deltaX.add(cache.getLast().minus(cache.get(cache.indexOf(cache.getLast()) - 1)).norm1());
+            cache.addLast(Sa.matrixRoundUp(cache.getLast().times(B).plus(c)));
+            deltaX.add(Math.round(cache.getLast().minus(cache.get(cache.indexOf(cache.getLast()) - 1)).norm1() * 1000.0) / 1000.0);
         }
 
         cache.stream().forEachOrdered(i -> {
