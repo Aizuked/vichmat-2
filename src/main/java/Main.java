@@ -33,6 +33,7 @@ public class Main {
             {0, 0, 0, 0}
     };
     static final double[] b = {0.425, 0.021, 0.213, 0.946};
+    private static int rounder = 0;
 
     public static void main(String[] args) {
         BufferedReader bfReader =
@@ -43,6 +44,13 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        double acc = accuracy;
+        while ((int) accuracy * 10 == 0) {
+            accuracy *= 10;
+            rounder++;
+        }
+        accuracy = acc;
+
 
         Matrix D = new Matrix(d);
         Matrix L = new Matrix(l);
@@ -55,16 +63,16 @@ public class Main {
 
         cache.addFirst(new Matrix(new double[]{0, 0, 0, 0}, 1));
         deltaX.addFirst(0d);
-        cache.add(Sa.matrixRoundUp(c));
+        cache.add((c));
         deltaX.add(cache.getLast().minus(cache.get(cache.indexOf(cache.getLast()) - 1)).norm1());
 
         while (cache.getLast().minus(cache.get(cache.indexOf(cache.getLast()) - 1)).norm1() >= (1 - B.norm1()) / B.norm1() * accuracy) {
-            cache.addLast(Sa.matrixRoundUp(cache.getLast().times(B).plus(c)));
-            deltaX.add(Math.round(cache.getLast().minus(cache.get(cache.indexOf(cache.getLast()) - 1)).norm1() * 1000.0) / 1000.0);
+            cache.addLast((cache.getLast().times(B).plus(c)));
+            deltaX.add(cache.getLast().minus(cache.get(cache.indexOf(cache.getLast()) - 1)).norm1());
         }
 
         cache.stream().forEachOrdered(i -> {
-            System.out.println(Arrays.deepToString(i.getArray()) + " " + deltaX.get(cache.indexOf(i)));
+            System.out.println(Arrays.deepToString(matrixToRoundUp(i).getArray()) + " " + roundUp(deltaX.get(cache.indexOf(i))));
         });
 
         int checkCtr = 0;
@@ -81,5 +89,22 @@ public class Main {
         }
 
         System.out.println(checkCtr == 4 ? "Сходится" : "Не сходится");
+    }
+
+
+    public static Matrix matrixToRoundUp(Matrix matrixToRound) {
+        double[][] tempMatrix = matrixToRound.getArray();
+
+        for (int i = 0; i < tempMatrix.length; i++) {
+            for (int j = 0; j < tempMatrix[i].length ; j++) {
+                tempMatrix[i][j] = roundUp(tempMatrix[i][j]);
+            }
+        }
+
+        return new Matrix(tempMatrix);
+    }
+
+    public static double roundUp(double toRound) {
+        return Math.round(Math.pow(10, rounder) * toRound) / Math.pow(10, rounder);
     }
 }
